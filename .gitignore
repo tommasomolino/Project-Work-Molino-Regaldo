@@ -1,2 +1,20 @@
 .DS_Store
 __MACOSX/
+
+# Bytecode e cache Python
+__pycache__/
+*.pyc
+
+# Ambienti virtuali
+venv/
+.venv/
+env/
+
+# File di PyCharm
+.idea/
+
+# Cache di pytest
+.pytest_cache/
+
+# File di sistema
+.DS_Store
