@@ -23,17 +23,24 @@ Ogni entry dovrebbe toccare almeno tre di questi punti:
 
 ## Entry
 
-### Settimana 1 — [date]
+### Settimana 1 — [fine giugno]
 
-_Scrivete qui._
+Prima di tutto abbiamo cercato di capire con chi fare gruppo.
+Abbiamo deciso di lavorare insieme (Marco & Tommaso) perchè condividiamo le stesse problematiche a livello di programmazione.
+Condividiamo la stessa curiosità e voglia di metterci in gioco. 
+Abbiamo letto le proposte indicate dal professore e abbiamo scelto di sviluppare uno strumento che ci possa tornare utile nel futuro.
 
-### Settimana 2 — [date]
+### Settimana 2 — [inizio luglio]
 
-_Scrivete qui._
+La nostra idea per il progetto è stata visionata dal professore.
+Basandoci sulle sue condiderazioni abbiamo scelto di ridurre lo scope dei 7 tool ipotizzati in proposta.md a 3 ben strutturati.
+L'obiettivo è approfondire ciascuno di questi tool invece di fare tanti tool superficiali: PortScanner, IPCalculator, DNSLookup. 
+Scartati i seguenti tool: HTTPHeaders, WhoisLookup, PingTool, HashCalculator.
 
-### Settimana 3 — [date]
+### Settimana 3 — [seconda settimana - luglio]
 
-_Scrivete qui._
+Creata classe base in tool.py e imbastita sottoclasse port_scanner.py.
+Imparato a utilizzare il costruttore super()__ini__ per una sottoclasse.
 
 ---
 
