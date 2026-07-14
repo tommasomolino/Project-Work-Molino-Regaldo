@@ -8,6 +8,7 @@
 
 Utilizzata l'AI come supporto per lo studio e progettazione del codice.
 Intelligenza artificiale di riferimento Claude - ChatGPT.
+Richiesta verifica del codice scritto, segnalando problematiche senza fornire soluzione.
 
 
 ## Dettaglio per parte

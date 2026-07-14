@@ -41,6 +41,7 @@ Scartati i seguenti tool: HTTPHeaders, WhoisLookup, PingTool, HashCalculator.
 
 Creata classe base in tool.py e imbastita sottoclasse port_scanner.py.
 Imparato a utilizzare il costruttore super()__ini__ per una sottoclasse.
+Implementazione nella sottoclasse PortScanner il metodo execute() sull'analisi di una porta specifica.
 
 ---
 

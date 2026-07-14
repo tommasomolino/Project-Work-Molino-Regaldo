@@ -5,6 +5,9 @@
 
 ## Perché l'ereditarietà (e non composizione/funzioni)
 
+La gerarchia del codice è una relazione "is A" perchè la classe Tool raggruppa sotto la stessa famiglia le altre sottoclassi PortScanner, IPCalculator, DNSLookup.
+L'ereditarietà è la scelta giusta perchè le sottoclassi hanno attributi in comune.
+
 _Paragrafo obbligatorio._ Spiega perché la tua gerarchia è una relazione *is-a* reale e
 perché qui l'ereditarietà è la scelta giusta rispetto alle alternative:
 
@@ -19,5 +22,7 @@ perché qui l'ereditarietà è la scelta giusta rispetto alle alternative:
 - _Compromessi accettati per stare nei tempi: …_
 
 ## Alternative scartate
+
+
 
 _Cosa avete provato e abbandonato, e perché. Anche i vicoli ciechi insegnano._
