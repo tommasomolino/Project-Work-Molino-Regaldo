@@ -6,7 +6,9 @@
 
 ## Sintesi
 
-_Una riga: quanto e come avete usato l'IA in questo progetto._
+Utilizzata l'AI come supporto per lo studio e progettazione del codice.
+Intelligenza artificiale di riferimento Claude - ChatGPT.
+
 
 ## Dettaglio per parte
 
