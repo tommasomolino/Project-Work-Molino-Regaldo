@@ -7,31 +7,54 @@ class PortScanner(Tool):
         self.port_range = port_range
         self.timeout = timeout
 
-    def execute(self, target):
+        for port in port_range:
+            if port < 0 or port > 65535:
+                raise ValueError(f"Il valore della porta {port} non è valido")
+        if timeout <= 0:
+            raise ValueError(f"Il timeout {timeout} non è valido")
+        
+    def execute(self, target, verbose = False):
         report = super().execute(target)
+        self.verbose = verbose
 
-        try: 
-            with socket.socket() as s:
-                s.settimeout(self.timeout) 
-                s.connect((target, 80))  
+        port_opened = []
+        port_closed = []
+        port_timeout = []
 
-        except ConnectionRefusedError as e:
-            print(f"La connessione non è andata a buon fine:{e}")
-            report["esito"] = "Scansione avvenuta, nessuna porta aperta"
-            report["risultato"] = "Porta 80 chiusa"
-            return report
+        for port in self.port_range:
+            try:
+                with socket.socket() as s:
+                    s.settimeout(self.timeout)
+                    s.connect((target, port))
+
+            except ConnectionRefusedError as e:
+                port_closed.append(port)
+                if self.verbose:
+                    print(f"Connessione rifiutata sulla porta {port}: {e}")
+
+                
+            except TimeoutError as e:
+                port_timeout.append(port)
+                if self.verbose:
+                    print(f"Timeout sulla porta {port}: {e}")
             
+            except OSError as e:
+                port_closed.append(port)
+                if self.verbose:
+                    print(f"Errore di rete sulla porta {port}: {e}")
+                
+            else:
+                port_opened.append(port)
+                if self.verbose:
+                    print(f"Porta {port} aperta")
         
-        except socket.timeout as e:
-            print(f"La scansione ci ha messo troppo tempo:{e}")
-            report["esito"] = "Scansione bloccata, richiesto troppo tempo"
-            report["risultato"] = "Porta 80 irraggiungibile"
-            return report
-        
-        else:
-            report["esito"] = "Scansione avvenuta con successo"
-            report["risultato"] = "Porta 80 aperta"
-            return report
+        report["esito"] = "Scansione effettuata"
+        report["risultato"] = (
+            f"Le porte aperte sono:{port_opened}\n"
+            f"Le porte chiuse sono:{port_closed}\n"
+            f"Le porte andate in timeout sono:{port_timeout}"
+        )
+        return report  
 
 
 
