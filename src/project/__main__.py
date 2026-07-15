@@ -2,6 +2,7 @@ from pprint import pprint
 
 from .dns_lookup import DNSLookup
 from .port_scanner import PortScanner
+from .report_exporter import export_report
 
 
 def dns_lookup() -> None:
@@ -41,10 +42,15 @@ def dns_lookup() -> None:
 
     print("\n--- RISULTATO DNS LOOKUP ---")
     pprint(report)
+    export(report)
 
 
 def port_scanner() -> None:
     target = input("Inserisci IP o hostname da scansionare: ").strip()
+
+    if target == "":
+        print("Devi indicare un IP o un hostname.")
+        return
 
     start_port = int(input("Inserisci la porta iniziale: "))
     end_port = int(input("Inserisci la porta finale: "))
@@ -65,7 +71,29 @@ def port_scanner() -> None:
 
     print("\n--- RISULTATO PORT SCANNER ---")
     pprint(report)
+    export(report)
 
+def export(report: dict) -> None:
+    choice = input(
+        "Vuoi esportare il report in un file JSON? s/n: ").strip().lower()
+
+    if choice == "s":
+        file_path = input("Inserisci il percorso: ").strip()
+
+        if file_path == "":
+            print("Devi indicare un nome o un percorso per il file.")
+            return
+
+        if not file_path.lower().endswith(".json"):
+            file_path += ".json"
+
+        export_report(report, file_path)
+
+    elif choice == "n":
+        return
+
+    else:
+        print("Scelta non valida.")
 
 def main() -> None:
     while True:
