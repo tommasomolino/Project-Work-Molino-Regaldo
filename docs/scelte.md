@@ -57,4 +57,4 @@ Inizialmente avevamo considerato di passare il dominio direttamente al costrutto
 
 Abbiamo inoltre evitato di inserire chiamate a `input()` dentro `DNSLookup`. In questo modo la classe può essere utilizzata anche da test automatici, da altri moduli o da una futura interfaccia diversa dalla CLI.
 
-Per i record mancanti avevamo inizialmente previsto di sostituire l’intero risultato con un messaggio di errore. Questa soluzione è stata abbandonata perché, durante una ricerca multipla, avrebbe cancellato i record già trovati.
+Per i record mancanti avevamo inizialmente previsto di sostituire l’intero risultato con un messaggio di errore. Questa soluzione è stata abbandonata perché, durante una ricerca multipla, avrebbe cancellato i record già trovati
