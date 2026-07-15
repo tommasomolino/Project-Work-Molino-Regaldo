@@ -30,6 +30,7 @@ Implementato il tool DNSLookup con record A come sottoclasse di Tool. Aggiunti r
 Generato il __main__.py e in seguito modificato a mano.
 Difficoltà nell'evitare che gli errori si sovrascrivessero, risolto tramite dizionari distinti (record_status e dns_results).
 Gestione degli errori di query DNS. Validazione degli input e test su entrambi i tool (Portscanner e DNS Lookup).
+Aggiunta la possibilità di esportare il report in JSON.
 
 
 ---
