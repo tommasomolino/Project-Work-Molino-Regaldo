@@ -4,17 +4,46 @@ from .dns_lookup import DNSLookup
 from .port_scanner import PortScanner
 
 
-def test_dns_lookup() -> None:
+def dns_lookup() -> None:
     domain = input("Inserisci il dominio da risolvere: ").strip()
+    if domain == "":
+        print("Devi indicare un dominio.")
+        return
 
-    dns_lookup = DNSLookup("DNSLookup")
+    allowed_records = ["A", "AAAA", "MX", "TXT"]
+    record_input= input(f"Scegli uno o più tipi di record ({allowed_records} oppure ALL): ").strip().upper()
+
+    if record_input == "ALL":
+        record_types = list(allowed_records)
+    else:
+        record_types = []
+
+        for record in record_input.split(","):
+            record = record.strip()
+
+            if record == "":
+                print("Devi indicare almeno un tipo di record.")
+                return
+
+            if record not in allowed_records:
+                print(f"Il record {record} non è valido.")
+                return
+
+            record_types.append(record)
+
+
+    dns_lookup = DNSLookup(
+        tool_name="DNSLookup",
+        record_types=record_types
+    )
+
     report = dns_lookup.execute(domain)
 
     print("\n--- RISULTATO DNS LOOKUP ---")
     pprint(report)
 
 
-def test_port_scanner() -> None:
+def port_scanner() -> None:
     target = input("Inserisci IP o hostname da scansionare: ").strip()
 
     start_port = int(input("Inserisci la porta iniziale: "))
@@ -49,10 +78,10 @@ def main() -> None:
 
         try:
             if choice == "1":
-                test_dns_lookup()
+                dns_lookup()
 
             elif choice == "2":
-                test_port_scanner()
+                port_scanner()
 
             elif choice == "0":
                 print("Chiusura del Network Toolkit.")

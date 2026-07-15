@@ -1,25 +1,48 @@
 from .tool import Tool
 import dns.resolver
+import dns.exception
 
 class DNSLookup(Tool):
-    def __init__(self, tool_name):
+    def __init__(self, tool_name, record_types):
         super().__init__(tool_name)
+        self.record_types = record_types
 
     def execute(self, target:str) -> dict:
         report = super().execute(target)
 
-        try:
-            answers = dns.resolver.resolve(target, "A")
+        dns_results = {}
+        record_status = {}
 
-            ip_addresses = []
-            for answer in answers:
-                ip_addresses.append(answer.to_text())
+        for record_type in self.record_types:
 
-            report["esito"] = "Dominio risolto con successo"
-            report["risultato"] = ip_addresses
+            try:
+                answers = dns.resolver.resolve(target, record_type)
 
-        except dns.resolver.NXDOMAIN as e:
-            report["esito"] = "Dominio inesistente"
-            report["risultato"] = f"Il dominio scelto ha restituito l'errore: {e}"
+                record_values = []
+                for answer in answers:
+                    record_values.append(answer.to_text())
+
+                dns_results[record_type] = record_values
+                record_status[record_type] = "Risolto con successo"
+
+            except dns.resolver.NXDOMAIN as e:
+                report["esito"] = "Dominio inesistente"
+                report["risultato"] = f"Il dominio scelto ha restituito l'errore: {e}"
+                return report
+
+            except dns.resolver.NoAnswer as e:
+                record_status[record_type] = f"Record non è presente: {e}"
+                dns_results[record_type] = []
+
+            except dns.exception.Timeout as e:
+                record_status[record_type] = f"Timeout durante la risoluzione: {e}"
+                dns_results[record_type] = []
+
+            except dns.resolver.NoNameservers as e:
+                record_status[record_type] = f"Nessun server DNS disponibile: {e}"
+                dns_results[record_type] = []
+
+        report["esito"] = record_status
+        report["risultato"] = dns_results
 
         return report
