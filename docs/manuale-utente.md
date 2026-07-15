@@ -6,8 +6,9 @@
 ## Installazione
 
 ```bash
-git clone <URL>
-cd <repo>
+git clone https://github.com/tommasomolino/Project-Work-Molino-Regaldo.git
+cd Network\ ToolKit/
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 

@@ -1,25 +1,25 @@
-# <Nome del progetto>
-
-> Sostituisci questo README con quello del tuo progetto. Le istruzioni qui sotto sono il
-> minimo: cosa fa, come si installa, come si avvia, come si lanciano i test.
+# Network Toolkit
 
 ## Cosa fa
 
-Tre-cinque righe a parole tue. Se non riesci a riassumerlo, non l'hai ancora capito.
+Network Toolkit è uno strumento da riga di comando pensato per svolgere operazioni di rete.
+Il programma permette di eseguire lookup DNS su diversi tipi di record, effettuare scansioni di porte su un host e calcolare informazioni su indirizzi e sottoreti IP.
+L’obiettivo è fornire un toolkit semplice ma concreto, con risultati organizzati in formato JSON.
+La struttura a classi rende il progetto estendibile: nuovi strumenti potranno essere aggiunti senza modificare il funzionamento generale del programma.
 
 ## Membri del gruppo
 
-- Nome Cognome — handle GitHub
-- Nome Cognome — handle GitHub
+- Tommaso Molino — handle GitHub
+- Marco Giacomo Regaldo — handle GitHub
 
 Corso: Programmazione Python — Cybersecurity Specialist.
 
 ## Installazione
 
 ```bash
-git clone <URL-del-vostro-repo>
-cd <nome-cartella>
-python -m venv .venv && source .venv/bin/activate   # consigliato
+git clone https://github.com/tommasomolino/Project-Work-Molino-Regaldo.git
+cd Network\ ToolKit/
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
