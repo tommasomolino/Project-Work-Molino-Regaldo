@@ -14,7 +14,3 @@ class Tool:
         }
         return report
 
-        
-    
-        
-

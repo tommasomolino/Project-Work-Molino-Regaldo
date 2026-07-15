@@ -7,3 +7,4 @@
 #
 # Sempre utile per i test:
 pytest
+dnspython
