@@ -31,7 +31,7 @@ class DNSLookup(Tool):
                 return report
 
             except dns.resolver.NoAnswer as e:
-                record_status[record_type] = f"Record non è presente: {e}"
+                record_status[record_type] = f"Il record non è presente: {e}"
                 dns_results[record_type] = []
 
             except dns.exception.Timeout as e:
