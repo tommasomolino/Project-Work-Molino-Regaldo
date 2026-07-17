@@ -2,7 +2,7 @@ from .tool import Tool
 import socket
 
 class PortScanner(Tool):
-    def __init__(self, tool_name, port_range, timeout = 1):
+    def __init__(self, tool_name: str, port_range: int, timeout: int):
         super().__init__(tool_name)
         self.port_range = port_range
         self.timeout = timeout
@@ -13,7 +13,7 @@ class PortScanner(Tool):
         if timeout <= 0:
             raise ValueError(f"Il timeout {timeout} non è valido")
         
-    def execute(self, target, verbose = False):
+    def execute(self, target, verbose):
         report = super().execute(target)
         self.verbose = verbose
 
@@ -50,8 +50,8 @@ class PortScanner(Tool):
         
         report["esito"] = "Scansione effettuata"
         report["risultato"] = (
-            f"Le porte aperte sono:{port_opened}\n"
-            f"Le porte chiuse sono:{port_closed}\n"
+            f"Le porte aperte sono:{port_opened}"
+            f"Le porte chiuse sono:{port_closed}"
             f"Le porte andate in timeout sono:{port_timeout}"
         )
         return report  

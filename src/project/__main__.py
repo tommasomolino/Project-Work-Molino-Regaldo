@@ -2,6 +2,7 @@ from pprint import pprint
 
 from .dns_lookup import DNSLookup
 from .port_scanner import PortScanner
+from .ip_calculator import IpCalculator
 from .report_exporter import export_report
 
 
@@ -70,7 +71,7 @@ def port_scanner() -> None:
     report = scanner.execute(target, verbose=True)
 
     print("\n--- RISULTATO PORT SCANNER ---")
-    pprint(report)
+    print(report)
     export(report)
 
 def export(report: dict) -> None:
@@ -100,6 +101,7 @@ def main() -> None:
         print("\n=== NETWORK TOOLKIT ===")
         print("1. DNS Lookup")
         print("2. Port Scanner")
+        print("3. IP Calculator")
         print("0. Esci")
 
         choice = input("Seleziona uno strumento: ").strip()
