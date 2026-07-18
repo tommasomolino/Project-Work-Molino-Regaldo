@@ -34,12 +34,12 @@ def dns_lookup() -> None:
             record_types.append(record)
 
 
-    dns_lookup = DNSLookup(
+    dns_tool = DNSLookup(
         tool_name="DNSLookup",
         record_types=record_types
     )
 
-    report = dns_lookup.execute(domain)
+    report = dns_tool.execute(domain)
 
     print("\n--- RISULTATO DNS LOOKUP ---")
     pprint(report)
@@ -71,8 +71,44 @@ def port_scanner() -> None:
     report = scanner.execute(target, verbose=True)
 
     print("\n--- RISULTATO PORT SCANNER ---")
-    print(report)
+    pprint(report)
     export(report)
+
+def ip_calculator() -> None:
+
+    target = input("Inserisci l'indirizzo ip della rete, ad esempio 192.168.1.0/24: ").strip()
+    if target == "":
+        print("Devi indicare una rete")
+        return
+
+    host_input = input("Inserisci il numero di host di ogni sottorete, ad esempio 100,50,20: ").strip()
+    if host_input == "":
+        print("Devi indicare degli host")
+        return
+
+    host_requirements = []
+
+    for host in host_input.split(","):
+        try:
+            host_number = int(host.strip())
+
+            if host_number <= 0:
+                print(f"{host_number} non è un valore valido: deve essere maggiore di zero.")
+                return
+
+            host_requirements.append(host_number)
+
+        except ValueError as e:
+            print(f"Inserisci solo numeri interi validi: {e}")
+            return
+
+    ip_calc = IpCalculator(tool_name="IpCalculator")
+    report = ip_calc.execute(target, host_requirements)
+
+    print("\n--- RISULTATO IP CALCULATOR ---")
+    pprint(report)
+    export(report)
+
 
 def export(report: dict) -> None:
     choice = input(
@@ -116,6 +152,9 @@ def main() -> None:
             elif choice == "0":
                 print("Chiusura del Network Toolkit.")
                 break
+
+            elif choice == "3":
+                ip_calculator()
 
             else:
                 print("Scelta non valida.")

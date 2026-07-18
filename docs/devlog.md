@@ -35,7 +35,7 @@ Implementato il tool IpCalculator come sottoclasse di Tool.
 Nessuna configurazione fissa nel costruttore perchè i requisiti di rete e di host cambiano ogni volta che vengono calcolati.
 Il metodo execute() è strutturato in modo che l'utente possa indicare una lista di host richiesti per ogni sottorete, dopo aver scelto l'indirizzo di rete corrispondente.
 Gli errori sono stati gestiti nel caso in cui l'utente richiedesse un numero di host negativo fin da subito, se la struttura dell'indirizzo di rete fornito non fosse un indirizzo IP e lo spazio degli indirizzi disponibili fosse terminato.
-
+Implementato l'ip calc nel main, tutto sembra funzionare correttamente
 
 
 
