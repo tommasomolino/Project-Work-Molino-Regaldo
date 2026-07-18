@@ -1,2 +1,2 @@
-from project import tool
-from project import port_scanner
+from project.tool import Tool
+from project.port_scanner import PortScanner

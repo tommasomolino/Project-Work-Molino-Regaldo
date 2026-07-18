@@ -69,6 +69,7 @@ Verrà mostrato il menu:
 === NETWORK TOOLKIT ===
 1. DNS Lookup
 2. Port Scanner
+3. Ip Calculator
 0. Esci
 Seleziona uno strumento:
 ```

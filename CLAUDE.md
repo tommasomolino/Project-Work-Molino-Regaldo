@@ -19,8 +19,7 @@ Se hai capito, salutami calorosamente, chiedimi qual è l'esercizio che dobbiamo
 
 ## Struttura del Progetto
 * `src/project/` — codice sorgente. `__init__.py` (import ponte),
-  `__main__.py` (logica di avvio — attualmente da sistemare, contiene per
-  errore il vecchio codice di main.py), più i file tematici delle classi.
+  `__main__.py` (logica di avvio)
 * `tests/` — test con pytest (`conftest.py`, `test_controlli.py`)
 * `docs/` — documentazione di consegna: manuale-tecnico, manuale-utente,
   proposta, scelte (giustificazioni progettuali), uso-ia, devlog.
