@@ -6,7 +6,7 @@
 
 ## Titolo provvisorio
 
-<Nome del progetto>
+Network Toolkit
 
 ## Gruppo
 

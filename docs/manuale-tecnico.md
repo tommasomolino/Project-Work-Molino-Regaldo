@@ -21,7 +21,9 @@ src/
     ├── __main__.py
     ├── tool.py
     ├── port_scanner.py
-    └── dns_lookup.py
+    ├── dns_lookup.py
+    ├── ip_calculator.py
+    └── report_exporter.py
 ```
 
 ### `__init__.py`
@@ -118,6 +120,41 @@ dns_results = {
 
 Alla fine dell’esecuzione, questi dizionari vengono inseriti rispettivamente nelle chiavi `esito` e `risultato` del report comune.
 
+### `ip_calculator.py`
+
+Contiene la classe `IpCalculator`, che eredita da `Tool`.
+
+A differenza di `PortScanner` e `DNSLookup`, il costruttore non riceve alcuna configurazione
+oltre al `tool_name`: sia la rete di partenza sia il numero di host richiesti cambiano a ogni
+calcolo, quindi vengono passati entrambi a `execute(target, host_requirements)`.
+
+L’algoritmo implementa la tecnica VLSM (Variable Length Subnet Masking):
+
+1. gli host richiesti vengono ordinati in ordine decrescente, per assegnare prima le sottoreti
+   più grandi ed evitare di frammentare lo spazio di indirizzi;
+2. per ciascun valore si calcola il numero minimo di bit host necessari con
+   `math.ceil(math.log2(host + 2))` (il `+2` tiene conto degli indirizzi di rete e broadcast
+   riservati);
+3. un "cursore" (`cursor`), inizializzato all’indirizzo di rete, tiene traccia del primo
+   indirizzo libero e avanza dopo ogni sottorete allocata (`subnet.broadcast_address + 1`).
+
+La gestione degli indirizzi si appoggia al modulo standard `ipaddress`, che fornisce sia il
+parsing/la validazione della notazione CIDR sia le operazioni su reti e sottoreti.
+
+### `report_exporter.py`
+
+Contiene la funzione `export_report(report, file_path)`, usata da `__main__.py` per salvare su
+file un report già prodotto da uno strumento.
+
+La funzione serializza il report in JSON con `json.dump` (codifica UTF-8, indentazione a 4
+spazi) e intercetta separatamente le eccezioni più comuni di scrittura su file
+(`PermissionError`, `FileNotFoundError`, `IsADirectoryError`, `TypeError` per dati non
+serializzabili, `OSError` per altri errori del filesystem), stampando un messaggio specifico per
+ciascuna invece di un errore generico.
+
+L’aggiunta automatica dell’estensione `.json` quando l’utente non la specifica è gestita in
+`__main__.py`, non in questa funzione.
+
 ## Flusso di esecuzione
 
 Il flusso generale è il seguente:
@@ -189,8 +226,14 @@ classDiagram
         +execute(target) dict
     }
 
+    class IpCalculator {
+        +__init__(tool_name)
+        +execute(target, host_requirements) dict
+    }
+
     Tool <|-- PortScanner
     Tool <|-- DNSLookup
+    Tool <|-- IpCalculator
 ```
 
 Il metodo polimorfico è:
@@ -258,6 +301,25 @@ Il PortScanner gestisce le situazioni prodotte durante i tentativi di connession
 
 Il risultato finale separa le porte nelle rispettive categorie.
 
+## Gestione degli errori in IpCalculator
+
+Il metodo `execute` usa un blocco `try`/`except ValueError`/`else`:
+
+* `try` esegue il calcolo delle sottoreti;
+* `except ValueError` intercetta sia un `target` non valido (sollevato da
+  `ipaddress.ip_network`) sia un numero di host ≤ 0 (controllo esplicito nel ciclo);
+* `else` imposta l’esito di successo solo se nessuna eccezione è stata sollevata.
+
+Il caso di spazio di indirizzi esaurito (la sottorete calcolata non rientra più nella rete di
+partenza) non è un’eccezione ma un ritorno anticipato con esito di fallimento, perché è una
+condizione prevista del dominio del problema e non un errore di programmazione.
+
+**Comportamento noto**: poiché il controllo `host <= 0` si trova nello stesso blocco `try` che
+gestisce la validità dell’indirizzo di rete, il messaggio finale in `risultato` inizia sempre con
+il prefisso `"L'indirizzo di rete inserito non è valido: "`, anche quando il problema riguarda
+gli host. Questo comportamento è documentato e verificato esplicitamente nei test automatici
+(`tests/test_ip_calculator.py`); si veda anche `docs/scelte.md`.
+
 ## Come aggiungere una nuova sottoclasse
 
 Per aggiungere un nuovo strumento:
@@ -322,6 +384,17 @@ Non richiede installazioni aggiuntive.
 
 Il modulo `pprint` della libreria standard viene utilizzato nell’interfaccia per mostrare i report in modo leggibile.
 
+### ipaddress e math
+
+I moduli standard `ipaddress` e `math` vengono utilizzati da `IpCalculator` rispettivamente per
+la rappresentazione/validazione di reti e indirizzi IPv4 e per il calcolo dei bit host necessari
+in ciascuna sottorete (VLSM).
+
+### json
+
+Il modulo standard `json` viene utilizzato da `report_exporter.py` per serializzare i report su
+file.
+
 ## Installazione dell’ambiente di sviluppo
 
 Dalla radice della repository:
@@ -340,19 +413,18 @@ PYTHONPATH=src python -m project
 
 ## Test e verifiche
 
-Per eseguire i test automatici, quando presenti:
+Per eseguire i test automatici:
 
 ```bash
-PYTHONPATH=src pytest
+pytest
 ```
 
 ## Estensioni future
 
 Possibili estensioni compatibili con l’architettura:
 
-* aggiunta di `IPCalculator`;
 * supporto a record DNS `NS`, `CNAME`, `SOA` e `PTR`;
-* esportazione dei report in JSON;
-* test automatici con mock delle query DNS;
+* test automatici con mock delle query DNS e delle connessioni TCP;
 * separazione del menu in un modulo `cli.py`;
-* configurazione del resolver e del timeout DNS.
+* configurazione del resolver e del timeout DNS;
+* suddivisione di reti IPv6 in `IpCalculator`.

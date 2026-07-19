@@ -59,6 +59,14 @@ Abbiamo inoltre evitato di inserire chiamate a `input()` dentro `DNSLookup`. In 
 
 Per i record mancanti avevamo inizialmente previsto di sostituire l’intero risultato con un messaggio di errore. Questa soluzione è stata abbandonata perché, durante una ricerca multipla, avrebbe cancellato i record già trovati
 
+### Validazione dell'input per PortScanner e IpCalculator
+
+Anche per `PortScanner` e `IpCalculator`, come già per `DNSLookup`, una parte della validazione dell'input resta in `__main__.py` invece di essere spostata nelle classi — ma non tutta, e per motivi diversi da tool a tool.
+
+Per `PortScanner`, `__main__.py` verifica che la porta iniziale non sia maggiore di quella finale **prima** di costruire l'intervallo (`range(start_port, end_port + 1)`): se questo controllo mancasse, `range()` non solleverebbe alcun errore ma produrrebbe silenziosamente un intervallo vuoto, e la scansione richiesta dall'utente verrebbe ignorata senza alcuna spiegazione. Il controllo sui singoli valori di porta (0-65535) e sul timeout, invece, resta nel costruttore di `PortScanner`: è configurazione dello strumento, non dipende dall'input testuale dell'utente, e deve restare valida anche se lo strumento viene creato da un contesto diverso dalla CLI (per esempio un test automatico).
+
+Per `IpCalculator`, il controllo "il numero di host deve essere maggiore di zero" è presente **sia** in `__main__.py` **sia** dentro `IpCalculator.execute()` — è una duplicazione voluta, non una svista. In `__main__.py` il controllo produce un messaggio mirato al singolo valore che ha fallito (es. `-5 non è un valore valido: deve essere maggiore di zero.`); dentro `execute()` lo stesso controllo viene rifatto e intercettato come `ValueError` generico (con il messaggio meno preciso descritto sopra in "Comportamento noto"). Il controllo in `__main__.py` esiste per dare all'utente da terminale un errore chiaro e immediato; quello dentro `execute()` resta comunque necessario perché la classe deve rimanere corretta anche se chiamata da un contesto che non passa dalla validazione di `__main__.py` — come, appunto, i test automatici in `tests/test_ip_calculator.py`.
+
 ### Progettazione di IpCalculator
 
 `IpCalculator` è stata implementata come sottoclasse di `Tool`. A differenza di `DNSLookup`, il costruttore non riceve alcuna configurazione fissa oltre al `tool_name`: sia l'indirizzo di rete (`target`) sia l'elenco degli host richiesti per ogni sottorete cambiano a ogni calcolo, quindi vengono passati entrambi al metodo `execute(target, host_requirements)` invece di essere fissati all'istanziazione.
@@ -86,4 +94,12 @@ Per la scansione abbiamo usato il modulo standard `socket`, aprendo una connessi
 ### Gestione degli errori in PortScanner
 
 Le eccezioni sollevate durante la connessione vengono distinte per tipo: `ConnectionRefusedError` indica una porta chiusa (l'host ha risposto rifiutando la connessione), `TimeoutError` indica che non è arrivata risposta entro il timeout (porta filtrata o host irraggiungibile), `OSError` copre altri errori di rete generici e viene trattata come porta chiusa. Le porte vengono classificate in tre liste separate (aperte, chiuse, in timeout) e riassunte in un unico messaggio testuale in `risultato`.
+
+### Perché report_exporter.py non è una classe né una sottoclasse di Tool
+
+`export_report(report, file_path)` è rimasta una funzione libera, non un metodo di `Tool` né una classe a sé stante. La domanda ce la siamo posti esplicitamente, usando lo stesso criterio con cui valutiamo se serve una classe: un oggetto ha senso quando esiste uno **stato** (attributi che devono essere ricordati tra una chiamata e l'altra) e un **comportamento polimorfico** (più varianti dello stesso metodo che si comportano diversamente). `export_report` non ha né l'uno né l'altro: riceve tutto ciò che le serve tramite i parametri a ogni chiamata, e fa sempre la stessa identica cosa (serializzare un dizionario in JSON con `json.dump`), qualunque sia lo strumento che ha prodotto quel dizionario.
+
+Questo è anche il motivo per cui `report_exporter.py` non importa `Tool` né alcuna sua sottoclasse. Il metodo `execute()` di ogni sottoclasse di `Tool` restituisce sempre un semplice `dict` (mai `self`, come esplicitato dall'annotazione `-> dict`): una volta che `__main__.py` ha ricevuto quel dizionario, l'oggetto `Tool`/`DNSLookup`/`PortScanner`/`IpCalculator` che l'ha generato non serve più. `export_report` lavora quindi su un dato "puro" — un dizionario fatto di stringhe, numeri e liste — e non sull'istanza che lo ha prodotto.
+
+Questa scelta realizza un **basso accoppiamento** tra l'esportazione e la gerarchia degli strumenti: il contratto di `export_report` è "dammi un dizionario serializzabile in JSON", non "dammi un `Tool`". Aggiungere un quarto strumento in futuro non richiederà nessuna modifica a `report_exporter.py`, perché la funzione non sa (e non ha bisogno di sapere) da dove arrivi il report.
 

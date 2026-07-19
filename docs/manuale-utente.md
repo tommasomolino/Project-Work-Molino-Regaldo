@@ -231,6 +231,90 @@ Il dispositivo ha risposto rifiutando la connessione. La macchina è raggiungibi
 
 Non è stata ricevuta una risposta entro il tempo configurato. Il risultato può dipendere da firewall, filtri di rete, problemi di connessione o host non raggiungibile.
 
+## IP Calculator
+
+L’IP Calculator suddivide una rete in sottoreti secondo la tecnica VLSM (Variable Length Subnet
+Masking), a partire dal numero di host richiesti per ciascuna sottorete.
+
+### Avvio del calcolo
+
+Dal menu selezionare:
+
+```text
+3
+```
+
+Il programma richiede:
+
+1. l’indirizzo della rete di partenza, in notazione CIDR;
+2. il numero di host richiesti per ciascuna sottorete, separati da virgola.
+
+Esempio:
+
+```text
+Inserisci l'indirizzo ip della rete, ad esempio 192.168.1.0/24: 192.168.1.0/24
+Inserisci il numero di host di ogni sottorete, ad esempio 100,50,20: 100,50,20
+```
+
+### Output del calcolo
+
+Il programma assegna prima le sottoreti più grandi, per evitare di frammentare lo spazio di
+indirizzi disponibile. Report finale:
+
+```python
+{
+    'tool': 'IpCalculator',
+    'target': '192.168.1.0/24',
+    'esito': 'Calcolo eseguito con successo',
+    'risultato': [
+        {'host richiesti': 100, 'rete': '192.168.1.0/25', 'broadcast': '192.168.1.127'},
+        {'host richiesti': 50, 'rete': '192.168.1.128/26', 'broadcast': '192.168.1.191'},
+        {'host richiesti': 20, 'rete': '192.168.1.192/27', 'broadcast': '192.168.1.223'}
+    ]
+}
+```
+
+Ogni sottorete calcolata riporta il numero di host richiesti, l’indirizzo di rete assegnato
+(in notazione CIDR) e l’indirizzo di broadcast.
+
+### Spazio di indirizzi esaurito
+
+Se la rete di partenza non è abbastanza grande da contenere tutte le sottoreti richieste, il
+calcolo si interrompe e il report segnala l’esito negativo:
+
+```python
+{
+    'tool': 'IpCalculator',
+    'target': '192.168.1.0/28',
+    'esito': 'Calcolo fallito',
+    'risultato': "Spazio di indirizzi esaurito: non c'è posto per 100 host"
+}
+```
+
+In questo caso è necessario scegliere una rete di partenza più grande oppure ridurre il numero
+di host richiesti.
+
+## Esportazione in JSON
+
+Dopo ogni operazione (DNS Lookup, Port Scanner o IP Calculator), il programma chiede se si vuole
+salvare il report su file:
+
+```text
+Vuoi esportare il report in un file JSON? s/n:
+```
+
+Rispondendo `s` viene richiesto il percorso del file:
+
+```text
+Inserisci il percorso: report
+```
+
+Se il percorso indicato non termina con `.json`, l’estensione viene aggiunta automaticamente
+(nell’esempio sopra il file salvato sarà `report.json`). Il file viene scritto con codifica
+UTF-8 e indentazione leggibile.
+
+Rispondendo `n` il report non viene salvato e si torna al menu principale.
+
 ## Uscita dal programma
 
 Per chiudere Network Toolkit selezionare:
@@ -346,6 +430,44 @@ Possibili cause:
 * scansione bloccata dal sistema remoto.
 
 Verificare prima la raggiungibilità del target e utilizzare il programma solamente su sistemi per i quali si dispone dell’autorizzazione.
+
+### L’indirizzo di rete non è valido
+
+Il programma richiede un indirizzo in notazione CIDR (indirizzo seguito da `/` e prefisso).
+
+Corretto:
+
+```text
+192.168.1.0/24
+```
+
+Errato:
+
+```text
+192.168.1.0
+```
+
+### Il numero di host non è valido
+
+Ogni valore inserito deve essere un numero intero maggiore di zero. Il programma segnala
+l’errore prima di avviare il calcolo:
+
+```text
+Inserisci il numero di host di ogni sottorete, ad esempio 100,50,20: 100,-5,20
+-5 non è un valore valido: deve essere maggiore di zero.
+```
+
+### Spazio di indirizzi esaurito
+
+La rete indicata è troppo piccola per contenere tutte le sottoreti richieste. Scegliere una rete
+di partenza con un prefisso più corto (ad esempio `/23` invece di `/24`) oppure ridurre il numero
+di host richiesti.
+
+### Il file JSON non viene salvato
+
+Se il percorso indicato durante l’esportazione non è valido (cartella inesistente, permessi
+insufficienti, percorso che punta a una cartella), il programma mostra un messaggio d’errore e
+torna al menu senza interrompere l’esecuzione.
 
 ## Uso responsabile
 
