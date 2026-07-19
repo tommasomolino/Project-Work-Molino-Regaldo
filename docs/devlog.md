@@ -35,15 +35,25 @@ Implementato il tool IpCalculator come sottoclasse di Tool.
 Nessuna configurazione fissa nel costruttore perchè i requisiti di rete e di host cambiano ogni volta che vengono calcolati.
 Il metodo execute() è strutturato in modo che l'utente possa indicare una lista di host richiesti per ogni sottorete, dopo aver scelto l'indirizzo di rete corrispondente.
 Gli errori sono stati gestiti nel caso in cui l'utente richiedesse un numero di host negativo fin da subito, se la struttura dell'indirizzo di rete fornito non fosse un indirizzo IP e lo spazio degli indirizzi disponibili fosse terminato.
-Implementato l'ip calc nel main, tutto sembra funzionare correttamente
-
-
+Implementato l'ip calc nel main, tutto sembra funzionare correttamente.
+Aggiunti i pytest per i vari tool, pytest per il poliformismo.
 
 ---
 
 ## Bilancio finale
 
-Alla consegna, una entry di bilancio (30-50 righe). Spunti: di cosa siete più soddisfatti,
-cosa avete capito di nuovo, cosa avete sottovalutato all'inizio, cosa rifareste diversamente,
-se la divisione del lavoro è stata equa, cosa avreste aggiunto con un'altra settimana, e —
-onestamente — che voto dareste al vostro progetto e perché.
+30 minuti prima della consegna:
+Sicuramente siamo soddisfatti di essere riusciti a portare a termine quanto ideato nella prima settimana.
+Abbiamo concretamente compreso in cosa consiste la programmazione ad oggetti.
+Abbiamo conosciute nuove librerie importanti per il nostro corso e ci siamo resi conto cosa significhi programmare in un gruppo.
+
+Abbiamo assolutamente sottovalutato le tempistiche: le prime settimane sono state ignorate perchè la fine ci sembrava ben più lontana e avevamo molte verifiche a cui pensare.
+Ma comunque prima di metterci a scrivere ci siamo soffermati sul comprendere a pieno i concetti di poliformismo ed ereditarietà.
+
+Se potessimo tornare indietro avremmo organizzato meglio il lavoro e avremmo dedicato più tempo allo studio teorico per usare meno l'ai.
+
+La coppia ha funzionato in modo equo e crediamo di aver fatto un buon lavoro, ci siamo venuti in contro quando l'altro aveva bisogno di aiuto nello sviluppo del progetto o se semplicemente aveva bisogno di una pausa.
+
+Con un'altra settimana avremmo ampliato il port scanner con più informazioni nel report finale e con riconoscimento del servizio presente sulla porta. L'hash calculator sarebbe stato il prossimo passo.
+
+Pensiamo che il progetto, escludendo la parte orale, possa arrivare ad un umile 20, questo perchè non siamo programmatori esperti ma ci siamo comunque messi in gioco e riconosciamo che avremmo potuto fare molto di più.
